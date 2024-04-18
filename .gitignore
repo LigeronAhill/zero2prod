@@ -1,3 +1,5 @@
 /target
 .env
 .cargo/
+/.cargo
+.cargo/config.toml
