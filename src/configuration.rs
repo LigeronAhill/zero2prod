@@ -27,11 +27,14 @@ pub struct DatabaseSettings {
 }
 impl Default for DatabaseSettings {
     fn default() -> Self {
-        let host = std::env::var("DB_HOST").unwrap_or(String::from("0.0.0.0"));
+        let (host, port) = match std::env::var("DB_HOST") {
+            Ok(host) => (host, 5433),
+            Err(_) => (String::from("0.0.0.0"), 8001),
+        };
         Self {
             username: String::from("root"),
             password: Secret::new(String::from("root")),
-            port: 5433,
+            port,
             host,
             database_name: String::from("newsletter"),
             namespace: String::from("zero2prod"),
