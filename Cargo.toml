@@ -16,10 +16,12 @@ anyhow = "1"
 axum = {version = "0.7", features = ["multipart", "macros"]}
 chrono = { version = "0.4", features = ["serde"] }
 config = "0.14"
+secrecy = { version = "0.8.0", features = ["serde"] }
 serde = { version = "1", features = ["derive"] }
 surrealdb = "1.4"
 tokio = {version = "1.37", features = ["full"]}
-tower-http = { version = "0.5", features = ["trace"] }
+tower = {version = "0.4.13", features = ["full"]}
+tower-http = { version = "0.5", features = ["full"] }
 tracing = "0.1"
 tracing-bunyan-formatter = "0.3"
 tracing-log = "0.2"

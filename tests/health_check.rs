@@ -1,7 +1,7 @@
 use once_cell::sync::Lazy;
 use tokio::net::TcpListener;
 use zero2prod::{
-    configuration::get_configuration,
+    configuration::Settings,
     startup::app,
     telemetry::{get_subscriber, init_subscriber},
     Storage,
@@ -50,7 +50,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
         .expect("Failed to execute request.");
     let saved = test_app
         .db
-        .get_subscriber("ursula_le_guin@gmail.com")
+        .get_subscriber_by_email("ursula_le_guin@gmail.com")
         .await
         .unwrap();
     test_app.db.delete_subscriber(saved.clone()).await.unwrap();
@@ -88,15 +88,15 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
 }
 async fn spawn_app() -> TestApp {
     Lazy::force(&TRACING);
-    let listener = TcpListener::bind("127.0.0.1:0")
+    let listener = TcpListener::bind("0.0.0.0:0")
         .await
         .expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
-    let configuration = get_configuration().unwrap();
+    let configuration = Settings::default();
     let db = Storage::init(configuration).await.unwrap();
     let app = app(db.clone());
     tokio::spawn(zero2prod::startup::run(listener, app));
-    let address = format!("http://127.0.0.1:{}", port);
+    let address = format!("http://0.0.0.0:{}", port);
     TestApp { address, db }
 }
 pub struct TestApp {

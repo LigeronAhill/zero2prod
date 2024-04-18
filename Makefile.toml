@@ -1,6 +1,11 @@
+[tasks.checkdeps]
+command = "cargo"
+args = ["upeps", "--all-targets"]
+
 [tasks.clean]
 command = "cargo"
 args = ["clean"]
+dependencies = ["checkdeps"]
 
 [tasks.format]
 install_crate = "rustfmt"
@@ -20,7 +25,7 @@ dependencies = ["build"]
 
 [tasks.linterfix]
 command = "cargo"
-args = ["clippy", "--fix", "--allow-dirty"]
+args = ["clippy", "--fix", "--allow-dirty", "--allow-staged"]
 dependenies = ["test"]
 
 [tasks.tarpaulin]
@@ -45,7 +50,7 @@ dependencies = ["gpull"]
 
 [tasks.gcommit]
 command = "git"
-args = ["commit", "-m", '"${@}"']
+args = ["commit", "-m", "${@}"]
 dependencies = ["gadd"]
 
 [tasks.gpush]
@@ -53,3 +58,5 @@ command = "git"
 args = ["push"]
 dependencies = ["gcommit"]
 
+[tasks.quickpush]
+dependencies = ["gadd", "gcommit", "gpush"]

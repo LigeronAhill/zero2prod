@@ -3,14 +3,26 @@ use axum::{
     response::{IntoResponse, Response},
 };
 #[derive(Debug)]
-pub struct AppError(anyhow::Error);
+pub enum AppError {
+    Custom(anyhow::Error),
+    EmailAlreadyExists,
+    DatabaseError,
+    UserNotFound,
+}
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Something went wrong: {}", self.0),
-        )
-            .into_response()
+        match self {
+            AppError::Custom(e) => {
+                (StatusCode::INTERNAL_SERVER_ERROR, format!("Error: {e}")).into_response()
+            }
+            AppError::EmailAlreadyExists => {
+                (StatusCode::BAD_REQUEST, "Email already exists").into_response()
+            }
+            AppError::DatabaseError => {
+                (StatusCode::INTERNAL_SERVER_ERROR, "Database error").into_response()
+            }
+            AppError::UserNotFound => (StatusCode::BAD_REQUEST, "User not found").into_response(),
+        }
     }
 }
 
@@ -19,7 +31,7 @@ where
     E: Into<anyhow::Error>,
 {
     fn from(err: E) -> Self {
-        Self(err.into())
+        Self::Custom(err.into())
     }
 }
 pub type Result<T> = core::result::Result<T, AppError>;
