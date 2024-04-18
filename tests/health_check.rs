@@ -92,7 +92,10 @@ async fn spawn_app() -> TestApp {
         .await
         .expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
-    let configuration = Settings::default();
+    let mut configuration = Settings::default();
+    if std::env::var("DB_HOST").is_err() {
+        configuration.database.port = 45678
+    }
     let db = Storage::init(configuration).await.unwrap();
     let app = app(db.clone());
     tokio::spawn(zero2prod::startup::run(listener, app));

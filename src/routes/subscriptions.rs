@@ -9,7 +9,7 @@ use axum::{http::HeaderMap, Extension, Form, Json};
     name = "Adding new subscriber",
     skip(storage, input, headers),
     fields(
-        request_id = %get_req_id(headers.clone()), 
+        request_id = %get_req_id(headers.clone()),
         subscriber_email = %input.email,
         subscriber_name = %input.name
     )
@@ -25,6 +25,7 @@ pub async fn subscribe(
 fn get_req_id(headers: HeaderMap) -> u64 {
     headers
         .get("x-request-id")
-        .and_then(|v| v.to_str().ok()).and_then(|s| s.parse::<u64>().ok())
+        .and_then(|v| v.to_str().ok())
+        .and_then(|s| s.parse::<u64>().ok())
         .unwrap_or_default()
 }

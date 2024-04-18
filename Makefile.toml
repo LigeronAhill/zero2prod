@@ -58,5 +58,6 @@ command = "git"
 args = ["push"]
 dependencies = ["gcommit"]
 
-[tasks.quickpush]
-dependencies = ["gadd", "gcommit", "gpush"]
+[tasks.readme]
+command = "cargo"
+args = ["readme", "-o", "README.md"]

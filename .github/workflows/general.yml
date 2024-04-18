@@ -16,7 +16,7 @@ jobs:
       uses: jvllmr/surrealdb-action@2.0.0
       with:
         surrealdb-version: latest
-        surrealdb-port: 5433
+        surrealdb-port: 45678
         surrealdb-user: root
         surrealdb-password: root
   test:
