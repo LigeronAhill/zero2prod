@@ -53,7 +53,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
         .get_subscriber("ursula_le_guin@gmail.com")
         .await
         .unwrap();
-    let _deleted = test_app.db.delete_subscriber(saved.clone()).await.unwrap();
+    test_app.db.delete_subscriber(saved.clone()).await.unwrap();
     assert_eq!(200, response.status().as_u16());
     assert_eq!(saved.email, "ursula_le_guin@gmail.com");
     assert_eq!(saved.username, "le guin");
@@ -95,7 +95,7 @@ async fn spawn_app() -> TestApp {
     let configuration = get_configuration().unwrap();
     let db = Storage::init(configuration).await.unwrap();
     let app = app(db.clone());
-    let _ = tokio::spawn(zero2prod::startup::run(listener, app));
+    tokio::spawn(zero2prod::startup::run(listener, app));
     let address = format!("http://127.0.0.1:{}", port);
     TestApp { address, db }
 }

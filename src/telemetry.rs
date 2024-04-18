@@ -10,7 +10,7 @@ where
     M: for<'de> MakeWriter<'de> + Send + Sync + 'static,
 {
     let env_filter = EnvFilter::try_from_default_env()
-        .unwrap_or_else(|_| EnvFilter::new(&env_filter.to_string()));
+        .unwrap_or_else(|_| EnvFilter::new(env_filter.to_string()));
     let formatting_layer = BunyanFormattingLayer::new(name.to_string(), sink);
     Registry::default()
         .with(env_filter)

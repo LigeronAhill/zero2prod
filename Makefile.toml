@@ -1,0 +1,55 @@
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--emit=files"]
+dependencies = ["clean"]
+
+[tasks.build]
+command = "cargo"
+args = ["build"]
+dependencies = ["format"]
+
+[tasks.test]
+command = "cargo"
+args = ["test"]
+dependencies = ["build"]
+
+[tasks.linterfix]
+command = "cargo"
+args = ["clippy", "--fix", "--allow-dirty"]
+dependenies = ["test"]
+
+[tasks.tarpaulin]
+command = "cargo"
+args = ["tarpaulin", "--ignore-tests"]
+dependencies = ["linterfix"]
+
+[tasks.audit]
+command = "cargo"
+args = ["audit", "--ignore", "RUSTSEC-2023-0071", "--ignore", "RUSTSEC-2024-0320"]
+dependencies = ["tarpaulin"]
+
+[tasks.gpull]
+command = "git"
+args = ["pull"]
+dependencies = ["audit"]
+
+[tasks.gadd]
+command = "git"
+args = ["add", "."]
+dependencies = ["gpull"]
+
+[tasks.gcommit]
+command = "git"
+args = ["commit", "-m", '"${@}"']
+dependencies = ["gadd"]
+
+[tasks.gpush]
+command = "git"
+args = ["push"]
+dependencies = ["gcommit"]
+
