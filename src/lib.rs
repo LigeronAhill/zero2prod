@@ -8,3 +8,5 @@ pub use models::*;
 mod storage;
 pub use storage::Storage;
 pub mod telemetry;
+mod validator;
+pub use validator::validate_name;

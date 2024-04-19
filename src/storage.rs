@@ -15,8 +15,8 @@ pub struct Storage {
 }
 impl Storage {
     pub async fn init(config: Settings) -> Result<Storage> {
-        let conn = config.database.connection_string();
-        let root = config.database.root();
+        let conn = config.connection_string();
+        let root = config.root();
         let db = Surreal::new::<Ws>(conn.expose_secret()).await?;
         db.signin(root).await?;
         db.use_ns("zero2prod").use_db("newsletter").await?;
@@ -35,13 +35,15 @@ impl Storage {
     }
     #[tracing::instrument(name = "Saving new subscriber details in the database", skip(input))]
     pub async fn add_subscriber(&self, input: FormData) -> Result<Subscriber> {
-        let s = Subscriber::from(input);
+        let s = Subscriber::try_from(input)?;
         let subscriber: Option<Subscriber> =
             self.db.create(s.id.clone()).content(s).await.map_err(|e| {
                 if e.to_string().contains("userEmailIndex") {
                     AppError::EmailAlreadyExists
+                } else if e.to_string().contains("string::is::email") {
+                    AppError::InvalidEmail
                 } else {
-                    AppError::DatabaseError
+                    AppError::Custom(e.into())
                 }
             })?;
         match subscriber {

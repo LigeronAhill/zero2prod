@@ -61,3 +61,11 @@ dependencies = ["gcommit"]
 [tasks.readme]
 command = "cargo"
 args = ["readme", "-o", "README.md"]
+
+[tasks.startdb]
+command = "docker"
+args = ["run", "--rm", "--pull", "always", "-p", "8001:8000", "surrealdb/surrealdb:latest","start", "--user", "root", "--pass", "root", "memory"]
+
+[tasks.startdocker]
+command = "docker"
+args = ["run", "-p", "5427:8000", "zero2prod"]

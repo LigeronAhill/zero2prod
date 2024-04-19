@@ -1,7 +1,7 @@
 use once_cell::sync::Lazy;
 use tokio::net::TcpListener;
 use zero2prod::{
-    configuration::Settings,
+    configuration::get_configuration,
     startup::app,
     telemetry::{get_subscriber, init_subscriber},
     Storage,
@@ -92,7 +92,7 @@ async fn spawn_app() -> TestApp {
         .await
         .expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
-    let configuration = Settings::default();
+    let configuration = get_configuration().unwrap();
     let db = Storage::init(configuration).await.unwrap();
     let app = app(db.clone());
     tokio::spawn(zero2prod::startup::run(listener, app));

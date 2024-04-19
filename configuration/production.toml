@@ -1,0 +1,11 @@
+[application]
+host = "0.0.0.0"
+port = 8000
+[database]
+username = "root"
+password = "root"
+port = 8001
+host = "localhost"
+database_name = "newsletter"
+namespace = "zero2prod"
+
