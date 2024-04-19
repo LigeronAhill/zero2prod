@@ -10,8 +10,9 @@ async fn main() -> Result<()> {
     init_subscriber(subscriber);
     let configuration = zero2prod::configuration::get_configuration().unwrap();
     let listener = TcpListener::bind(&configuration.app_addr()).await?;
+    let email_client = zero2prod::EmailClient::new(&configuration)?;
     let db = zero2prod::Storage::init(configuration).await?;
-    let app = app(db);
+    let app = app(db, email_client);
     run(listener, app).await?;
     Ok(())
 }

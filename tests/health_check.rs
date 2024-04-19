@@ -4,7 +4,7 @@ use zero2prod::{
     configuration::get_configuration,
     startup::app,
     telemetry::{get_subscriber, init_subscriber},
-    Storage,
+    EmailClient, Storage,
 };
 // Ensure that the `tracing` stack is only initialised once using `once_cell`
 static TRACING: Lazy<()> = Lazy::new(|| {
@@ -93,8 +93,9 @@ async fn spawn_app() -> TestApp {
         .expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
     let configuration = get_configuration().unwrap();
+    let mail = EmailClient::new(&configuration).unwrap();
     let db = Storage::init(configuration).await.unwrap();
-    let app = app(db.clone());
+    let app = app(db.clone(), mail);
     tokio::spawn(zero2prod::startup::run(listener, app));
     let address = format!("http://0.0.0.0:{}", port);
     TestApp { address, db }

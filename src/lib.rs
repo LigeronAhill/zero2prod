@@ -10,3 +10,5 @@ pub use storage::Storage;
 pub mod telemetry;
 mod validator;
 pub use validator::validate_name;
+mod email_client;
+pub use email_client::EmailClient;

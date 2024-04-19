@@ -9,6 +9,7 @@ use crate::AppError;
 pub struct Settings {
     pub database: DatabaseSettings,
     pub application: ApplicationSettings,
+    pub email_client: EmailClientSettings,
 }
 #[derive(Deserialize, Debug)]
 pub struct ApplicationSettings {
@@ -23,6 +24,12 @@ pub struct DatabaseSettings {
     pub host: String,
     pub database_name: String,
     pub namespace: String,
+}
+#[derive(Deserialize, Debug)]
+pub struct EmailClientSettings {
+    pub token: Secret<String>,
+    pub base_url: String,
+    pub sender: String,
 }
 pub enum Environment {
     Local,

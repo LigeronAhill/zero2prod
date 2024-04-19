@@ -9,4 +9,8 @@ port = 5433
 host = "192.168.1.69"
 database_name = "newsletter"
 namespace = "zero2prod"
+[email_client]
+token = "20aa7675-3b54-4117-b7cb-288be8d2faf1"
+base_url = "http://localhost/"
+sender = "test@gmail.com"
 

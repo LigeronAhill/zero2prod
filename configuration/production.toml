@@ -8,4 +8,8 @@ port = 8001
 host = "localhost"
 database_name = "newsletter"
 namespace = "zero2prod"
+[email_client]
+token = "20aa7675-3b54-4117-b7cb-288be8d2faf1"
+base_url = "https://api.postmarkapp.com/"
+sender = "mail@safira.club"
 

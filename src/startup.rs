@@ -8,7 +8,7 @@ use std::{
 
 use crate::{
     routes::{health_check, subscribe},
-    Result, Storage,
+    EmailClient, Result, Storage,
 };
 use axum::{
     body::Bytes,
@@ -25,8 +25,9 @@ use tower_http::{
     LatencyUnit, ServiceBuilderExt,
 };
 
-pub fn app(storage: Storage) -> Router {
+pub fn app(storage: Storage, email_client: EmailClient) -> Router {
     let state = std::sync::Arc::new(storage);
+    let mail = std::sync::Arc::new(email_client);
     let sensitive_headers: Arc<[_]> = vec![header::AUTHORIZATION, header::COOKIE].into();
     let mw = ServiceBuilder::new()
         .sensitive_request_headers(sensitive_headers.clone())
@@ -48,6 +49,7 @@ pub fn app(storage: Storage) -> Router {
         .route("/subscriptions", post(subscribe))
         .layer(mw)
         .layer(Extension(state))
+        .layer(Extension(mail))
 }
 pub async fn run(listener: TcpListener, app: Router) -> Result<()> {
     tracing::info!("listening on {}", listener.local_addr()?);
