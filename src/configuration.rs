@@ -5,30 +5,48 @@ use surrealdb::opt::auth::Root;
 
 use crate::AppError;
 
+/// Represents the application settings.
 #[derive(Deserialize, Debug)]
 pub struct Settings {
+    /// The database settings.
     pub database: DatabaseSettings,
+    /// The application settings.
     pub application: ApplicationSettings,
+    /// The email client settings.
     pub email_client: EmailClientSettings,
 }
+/// Represents the application settings.
 #[derive(Deserialize, Debug)]
 pub struct ApplicationSettings {
+    /// The port number for the application.
     pub port: u16,
+    /// The host name for the application.
     pub host: String,
 }
+/// Represents the database settings.
 #[derive(Deserialize, Debug)]
 pub struct DatabaseSettings {
+    /// The username for the database.
     pub username: String,
+    /// The password for the database.
     pub password: Secret<String>,
+    /// The port number for the database.
     pub port: u16,
+    /// The host name for the database.
     pub host: String,
+    /// The name of the database.
     pub database_name: String,
+    /// The namespace for the database.
     pub namespace: String,
 }
+/// Represents the email client settings.
 #[derive(Deserialize, Debug)]
 pub struct EmailClientSettings {
+    /// The token for the email client.
     pub token: Secret<String>,
+    /// The base URL for the email client.
     pub base_url: String,
+    /// The sender email address for the email client.
     pub sender: String,
 }
 pub enum Environment {
@@ -58,6 +76,10 @@ impl TryFrom<String> for Environment {
         }
     }
 }
+/// Retrieves the application configuration settings.
+///
+/// This function reads the configuration settings from a TOML file based on the current environment
+/// and returns a `Result` containing the `Settings` struct if successful.
 pub fn get_configuration() -> crate::Result<Settings> {
     let path = std::env::current_dir()?.join("configuration");
     let environment: Environment = std::env::var("APP_ENVIRONMENT")
